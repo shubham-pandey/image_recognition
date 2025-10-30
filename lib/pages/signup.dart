@@ -1,47 +1,59 @@
-import 'package:final_task/pages/signup.dart';
 import 'package:flutter/material.dart';
+import 'login.dart'; // <-- added import to navigate to LoginPage()
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameCtrl = TextEditingController();
   final TextEditingController _emailCtrl = TextEditingController();
   final TextEditingController _passwordCtrl = TextEditingController();
+  final TextEditingController _confirmCtrl = TextEditingController();
   bool _loading = false;
   bool _obscure = true;
+
+  @override
+  void dispose() {
+    _nameCtrl.dispose();
+    _emailCtrl.dispose();
+    _passwordCtrl.dispose();
+    _confirmCtrl.dispose();
+    super.dispose();
+  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
 
-    // simulate API call
+    // TODO: call signup API here
     await Future.delayed(const Duration(seconds: 1));
 
     setState(() => _loading = false);
-    // On success navigate to home: Navigator.pushReplacementNamed(context, '/');
-  }
-
-  @override
-  void dispose() {
-    _emailCtrl.dispose();
-    _passwordCtrl.dispose();
-    super.dispose();
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Account created')));
+    Navigator.pop(context); // return to login by default
   }
 
   @override
   Widget build(BuildContext context) {
     final bg = LinearGradient(
-      colors: [const Color.fromARGB(255, 201, 201, 201), const Color.fromARGB(255, 69, 69, 69)],
+      colors: [Colors.grey.shade100, Colors.grey.shade300],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );
 
     return Scaffold(
+      
+      appBar: AppBar(
+        title: const Text('Sign up'),
+        centerTitle: true,
+        backgroundColor: Colors.grey.shade100,
+        ),
       body: Container(
         decoration: BoxDecoration(gradient: bg),
         child: Center(
@@ -50,21 +62,33 @@ class _LoginPageState extends State<LoginPage> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 420),
               child: Card(
-                color: Colors.grey.shade50,
+                color: Colors.white,
                 elevation: 8,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
-                    const SizedBox(height: 12),
-                    const Text('Sign in', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 6),
-                    Text('Enter your credentials to continue', style: TextStyle(color: Colors.grey.shade600)),
+                    const Text('Create account', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 6),
+                    Text('Join and start editing images', style: TextStyle(color: Colors.grey.shade600)),
                     const SizedBox(height: 18),
 
                     Form(
                       key: _formKey,
                       child: Column(children: [
+                        TextFormField(
+                          controller: _nameCtrl,
+                          decoration: InputDecoration(
+                            labelText: 'Full name',
+                            prefixIcon: const Icon(Icons.person_outline),
+                            filled: true,
+                            fillColor: Colors.grey.shade100,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                          ),
+                          validator: (v) => (v == null || v.trim().isEmpty) ? 'Name required' : null,
+                        ),
+                        const SizedBox(height: 12),
                         TextFormField(
                           controller: _emailCtrl,
                           keyboardType: TextInputType.emailAddress,
@@ -73,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                             prefixIcon: const Icon(Icons.email_outlined),
                             filled: true,
                             fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(35), borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                           ),
                           validator: (v) {
                             if (v == null || v.trim().isEmpty) return 'Email required';
@@ -94,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             filled: true,
                             fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(35), borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                           ),
                           validator: (v) {
                             if (v == null || v.isEmpty) return 'Password required';
@@ -102,65 +126,48 @@ class _LoginPageState extends State<LoginPage> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              // implement forgot password
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Forgot password')));
-                            },
-                            child: Text('Forgot password?', style: TextStyle(color: Colors.grey.shade700)),
+                        const SizedBox(height: 12),
+                        TextFormField(
+                          controller: _confirmCtrl,
+                          obscureText: _obscure,
+                          decoration: InputDecoration(
+                            labelText: 'Confirm password',
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            filled: true,
+                            fillColor: Colors.grey.shade100,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                           ),
+                          validator: (v) {
+                            if (v == null || v.isEmpty) return 'Confirm password';
+                            if (v != _passwordCtrl.text) return 'Passwords do not match';
+                            return null;
+                          },
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,
                           height: 48,
                           child: ElevatedButton(
                             onPressed: _loading ? null : _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey.shade900,
+                              backgroundColor: Colors.blueGrey.shade900,
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                             child: _loading
                                 ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                : const Text('Sign in', style: TextStyle(fontSize: 16), ),
+                                : const Text('Sign up', style: TextStyle(fontSize: 16)),
                           ),
                         ),
                         const SizedBox(height: 12),
-                        Row(children: [
-                          Expanded(child: Divider(color: Colors.grey.shade300)),
-                          Padding(padding: const EdgeInsets.symmetric(horizontal: 8.0), child: Text('or', style: TextStyle(color: Colors.grey.shade600))),
-                          Expanded(child: Divider(color: Colors.grey.shade300)),
-                        ]),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              // social/login placeholder
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Social login')));
-                            },
-                            icon: const Icon(Icons.login_outlined),
-                            label: const Padding(padding: EdgeInsets.symmetric(vertical: 12.0), child: Text('Continue with Google')),
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-                              side: BorderSide(color: Colors.grey.shade300),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 14),
                         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Text("Don't have an account?", style: TextStyle(color: Colors.grey.shade700)),
-        
+                          Text('Already have an account?', style: TextStyle(color: Colors.grey.shade700)),
                           TextButton(
                             onPressed: () => Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (_) => const SignUp()),
+                              MaterialPageRoute(builder: (_) => const LoginPage()),
                             ),
-                            child: const Text('Sign Up'),
+                            child: const Text('Sign in'),
                           )
                         ]),
                       ]),

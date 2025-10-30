@@ -23,14 +23,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const accent = Color(0xFF6C63FF); // violet accent
+    const accent = Color(0xFF6C63FF); 
     final bgGradient = const LinearGradient(
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
       colors: [
-        Color.fromARGB(255, 189, 239, 252), // deep navy
-        Color.fromARGB(255, 69, 96, 99), // slate
-        Color.fromARGB(255, 44, 66, 73), // muted indigo
+        Color.fromARGB(255, 189, 239, 252),
+        Color.fromARGB(255, 69, 96, 99),
+        Color.fromARGB(255, 44, 66, 73),
       ],
     );
 
