@@ -1,3 +1,4 @@
+import 'package:final_task/pages/forgot.dart';
 import 'package:final_task/pages/signup.dart';
 import 'package:flutter/material.dart';
 
@@ -107,8 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              // implement forgot password
-                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Forgot password')));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPassword()));
                             },
                             child: Text('Forgot password?', style: TextStyle(color: Colors.grey.shade700)),
                           ),
@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                           Text("Don't have an account?", style: TextStyle(color: Colors.grey.shade700)),
         
                           TextButton(
-                            onPressed: () => Navigator.pushReplacement(
+                            onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(builder: (_) => const SignUp()),
                             ),

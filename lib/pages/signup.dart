@@ -42,18 +42,16 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     final bg = LinearGradient(
-      colors: [Colors.grey.shade100, Colors.grey.shade300],
+      colors: [const Color.fromARGB(255, 201, 201, 201), const Color.fromARGB(255, 69, 69, 69)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );
 
     return Scaffold(
-      
       appBar: AppBar(
-        title: const Text('Sign up'),
-        centerTitle: true,
-        backgroundColor: Colors.grey.shade100,
-        ),
+        title: Text('Sign Up', style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600)),
+        leading: BackButton(),
+      ),
       body: Container(
         decoration: BoxDecoration(gradient: bg),
         child: Center(
@@ -64,7 +62,7 @@ class _SignUpState extends State<SignUp> {
               child: Card(
                 color: Colors.white,
                 elevation: 8,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -84,7 +82,7 @@ class _SignUpState extends State<SignUp> {
                             prefixIcon: const Icon(Icons.person_outline),
                             filled: true,
                             fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(35), borderSide: BorderSide.none),
                           ),
                           validator: (v) => (v == null || v.trim().isEmpty) ? 'Name required' : null,
                         ),
@@ -97,7 +95,7 @@ class _SignUpState extends State<SignUp> {
                             prefixIcon: const Icon(Icons.email_outlined),
                             filled: true,
                             fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(35), borderSide: BorderSide.none),
                           ),
                           validator: (v) {
                             if (v == null || v.trim().isEmpty) return 'Email required';
@@ -118,7 +116,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             filled: true,
                             fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(35), borderSide: BorderSide.none),
                           ),
                           validator: (v) {
                             if (v == null || v.isEmpty) return 'Password required';
@@ -135,7 +133,7 @@ class _SignUpState extends State<SignUp> {
                             prefixIcon: const Icon(Icons.lock_outline),
                             filled: true,
                             fillColor: Colors.grey.shade100,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(35), borderSide: BorderSide.none),
                           ),
                           validator: (v) {
                             if (v == null || v.isEmpty) return 'Confirm password';
@@ -152,7 +150,7 @@ class _SignUpState extends State<SignUp> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueGrey.shade900,
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                             ),
                             child: _loading
                                 ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
