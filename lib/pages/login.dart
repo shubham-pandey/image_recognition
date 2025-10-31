@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:final_task/config.dart';
 import 'package:final_task/pages/home_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -39,17 +40,18 @@ class _LoginPageState extends State<LoginPage> {
 
   final data = jsonDecode(response.body);
 
-  if (response.statusCode == 200 && data['success'] == true) {
-    
+  if (response.statusCode == 200 && data['data'] != null && data['data']['accessToken'] != null) {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('accessToken', data['data']['accessToken']);
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login successful!'))
+      SnackBar(content: Text(data['message'] ?? 'Login successful!'))
     );
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const HomeScreen()),
     );
   } else {
-    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(data['message'] ?? 'Login failed'))
     );
