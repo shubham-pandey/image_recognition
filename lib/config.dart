@@ -1,0 +1,1 @@
+const String apiUrl = 'https://image-processing-app-sepia.vercel.app';

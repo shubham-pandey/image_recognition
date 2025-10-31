@@ -25,7 +25,7 @@ Future<void> _submit() async {
   @override
   Widget build(BuildContext context) {
     final bg = LinearGradient(
-      colors: [Colors.grey.shade100, Colors.grey.shade300],
+      colors: [const Color.fromARGB(255, 201, 201, 201), const Color.fromARGB(255, 69, 69, 69)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );

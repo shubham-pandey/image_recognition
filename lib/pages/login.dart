@@ -1,6 +1,10 @@
 import 'package:final_task/pages/forgot.dart';
 import 'package:final_task/pages/signup.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:final_task/config.dart';
+import 'package:final_task/pages/home_screen.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,15 +21,40 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscure = true;
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _loading = true);
+  if (!_formKey.currentState!.validate()) return;
+  setState(() => _loading = true);
 
-    // simulate API call
-    await Future.delayed(const Duration(seconds: 1));
+  final url = Uri.parse('$apiUrl/api/v1/auth/login');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'email': _emailCtrl.text.trim(),
+      'password': _passwordCtrl.text,
+    }),
+  );
 
-    setState(() => _loading = false);
-    // On success navigate to home: Navigator.pushReplacementNamed(context, '/');
+  if (!mounted) return;
+  setState(() => _loading = false);
+
+  final data = jsonDecode(response.body);
+
+  if (response.statusCode == 200 && data['success'] == true) {
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Login successful!'))
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
+  } else {
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(data['message'] ?? 'Login failed'))
+    );
   }
+}
 
   @override
   void dispose() {

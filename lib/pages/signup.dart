@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'login.dart'; // <-- added import to navigate to LoginPage()
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:final_task/config.dart';
 
 
 class SignUp extends StatefulWidget {
@@ -31,12 +34,36 @@ class _SignUpState extends State<SignUp> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
 
-    // TODO: call signup API here
-    await Future.delayed(const Duration(seconds: 1));
+    final url = Uri.parse('$apiUrl/api/v1/auth/register');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'userName': _nameCtrl.text.trim(),
+        'email': _emailCtrl.text.trim(),
+        'password': _passwordCtrl.text,
+        'confirmPassword': _confirmCtrl.text,
+      }),
+    );
 
+    if (!mounted) return;
     setState(() => _loading = false);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Account created')));
-    Navigator.pop(context); // return to login by default
+
+    final data = jsonDecode(response.body);
+
+    if ((response.statusCode == 200 || response.statusCode == 201) && data['success'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Account created! Please sign in.'))
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(data['message'] ?? 'Signup failed'))
+      );
+    }
   }
 
   @override

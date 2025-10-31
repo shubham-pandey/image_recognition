@@ -1,3 +1,5 @@
+import 'package:final_task/pages/home_screen.dart';
+import 'package:final_task/pages/login.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -9,6 +11,16 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+  void initState() { 
+  super.initState();
+
+  Future.delayed(const Duration(seconds: 3), () {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  });
+}
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
