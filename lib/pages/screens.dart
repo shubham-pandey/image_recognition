@@ -1,7 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:final_task/pages/edit.dart';
-import 'package:final_task/pages/feature_edit.dart';
+import 'package:final_task/feature/find_objects.dart';
+import 'package:final_task/feature/text_extractor.dart';
+import 'package:final_task/feature/remove_background.dart';
+import 'package:final_task/feature/image_converter.dart';
+import 'package:final_task/feature/brightness_sharpness.dart';
+import 'package:final_task/feature/crop.dart';
 import 'package:final_task/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -71,7 +76,7 @@ class _HomeState extends State<Home> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const FeatureEditScreen(featureName: 'Find Objects'),
+                      builder: (_) => const FindObjectsScreen(),
                     ),
                   ),
                 ),
@@ -81,7 +86,7 @@ class _HomeState extends State<Home> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const FeatureEditScreen(featureName: 'Text Extractor'),
+                      builder: (_) => const TextExtractorScreen(),
                     ),
                   ),
                 ),
@@ -91,7 +96,7 @@ class _HomeState extends State<Home> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const FeatureEditScreen(featureName: 'Remove Background'),
+                      builder: (_) => const RemoveBackgroundScreen(),
                     ),
                   ),
                 ),
@@ -101,7 +106,7 @@ class _HomeState extends State<Home> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const FeatureEditScreen(featureName: 'Image Converter'),
+                      builder: (_) => const ImageConverterScreen(),
                     ),
                   ),
                 ),
@@ -111,7 +116,7 @@ class _HomeState extends State<Home> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const FeatureEditScreen(featureName: 'Brightness/Sharpness'),
+                      builder: (_) => const BrightnessSharpnessScreen(),
                     ),
                   ),
                 ),
@@ -121,7 +126,7 @@ class _HomeState extends State<Home> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const FeatureEditScreen(featureName: 'Crop'),
+                      builder: (_) => const CropComingSoonScreen(),
                     ),
                   ),
                 ),
