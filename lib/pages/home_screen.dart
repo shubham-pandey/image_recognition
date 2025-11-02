@@ -1,8 +1,5 @@
-import 'dart:io';
-import 'package:final_task/pages/edit.dart';
 import 'package:final_task/pages/screens.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,44 +14,95 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final titles = ['Home', 'Downloads', 'Search', 'Profile'];
+    final titles = ['Home', 'Downloads', 'Profile'];
     final List<Widget> pages = [
       const Home(),
       const Downloads(),
-      const SearchScreen(),
+      
       const ProfileScreen(),
     ];
 
     return Scaffold(
-      backgroundColor: Colors.transparent, // <-- add this line
+      backgroundColor: Colors.transparent,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
           titles[_currentIndex],
           style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.black.withOpacity(0.2),
+        backgroundColor: Colors.black.withOpacity(0.5),
         elevation: 0,
         centerTitle: true,
       ),
       body: Stack(
         children: [
-          // Gradient background with circles
+          // Main gradient background
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF6C63FF),
-                  Color(0xFF3A8DFF),
-                  Color(0xFF0F172A),
+                  Color(0xFF667EEA),
+                  Color(0xFF764BA2),
+                  Color(0xFF1a0033),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-          //gpt
-          
+          // Decorative circles - top left
+          Positioned(
+            top: -80,
+            left: -50,
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.08),
+              ),
+            ),
+          ),
+          // Decorative circles - bottom right
+          Positioned(
+            bottom: -100,
+            right: -60,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.06),
+              ),
+            ),
+          ),
+          // Decorative circles - middle
+          Positioned(
+            top: 200,
+            right: 30,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.05),
+              ),
+            ),
+          ),
+          // Decorative circles - left
+          Positioned(
+            bottom: 300,
+            left: 50,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.07),
+              ),
+            ),
+          ),
+          // Main content
           SafeArea(child: pages[_currentIndex]),
         ],
       ),
@@ -75,7 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
                 BottomNavigationBarItem(icon: Icon(Icons.download_rounded), label: 'Downloads'),
-                BottomNavigationBarItem(icon: Icon(Icons.search_rounded), label: 'Search'),
                 BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
               ],
             ),

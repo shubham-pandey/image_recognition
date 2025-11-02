@@ -22,39 +22,82 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscure = true;
 
   Future<void> _submit() async {
-  if (!_formKey.currentState!.validate()) return;
-  setState(() => _loading = true);
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _loading = true);
 
-  final url = Uri.parse('$apiUrl/api/v1/auth/login');
-  final response = await http.post(
-    url,
-    headers: {'Content-Type': 'application/json'},
-    body: jsonEncode({
-      'email': _emailCtrl.text.trim(),
-      'password': _passwordCtrl.text,
-    }),
-  );
+    try {
+      final url = Uri.parse('$apiUrl/api/v1/auth/login');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': _emailCtrl.text.trim(),
+          'password': _passwordCtrl.text,
+        }),
+      );
 
-  if (!mounted) return;
-  setState(() => _loading = false);
+      if (!mounted) return;
+      setState(() => _loading = false);
 
-  final data = jsonDecode(response.body);
+      // First check if the response is valid JSON
+      Map<String, dynamic> data;
+      try {
+        data = jsonDecode(response.body);
+      } catch (e) {
+        // If response is not JSON, show the actual response or a user-friendly message
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.statusCode == 500 
+              ? 'Server error. Please try again later.'
+              : 'Login failed: ${response.body.length > 100 ? 'Unexpected response' : response.body}'),
+            backgroundColor: Colors.red,
+          )
+        );
+        return;
+      }
 
-  if (response.statusCode == 200 && data['data'] != null && data['data']['accessToken'] != null) {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('accessToken', data['data']['accessToken']);
+      if (response.statusCode == 200 && data['data'] != null) {
+        final prefs = await SharedPreferences.getInstance();
+        // Save auth token
+        await prefs.setString('accessToken', data['data']['accessToken']);
+        
+        // Save user info from the nested user object
+        if (data['data']['user'] != null) {
+          await prefs.setString('userName', data['data']['user']['userName'] ?? '');
+          await prefs.setString('userEmail', data['data']['user']['email'] ?? '');
+          await prefs.setString('userId', data['data']['user']['_id'] ?? '');
+        }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(data['message'] ?? 'Login successful!'))
-    );
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
-    );
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(data['message'] ?? 'Login failed'))
-    );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(data['message'] ?? 'Login successful!'),
+            backgroundColor: Colors.green,
+          )
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(data['message'] ?? 'Login failed. Please check your credentials.'),
+            backgroundColor: Colors.red,
+          )
+        );
+      }
+    } catch (e) {
+      setState(() => _loading = false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Network error: $e'),
+          backgroundColor: Colors.red,
+        )
+      );
   }
 }
 
@@ -185,7 +228,6 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 14),
                         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                           Text("Don't have an account?", style: TextStyle(color: Colors.grey.shade700)),
-        
                           TextButton(
                             onPressed: () => Navigator.push(
                               context,
